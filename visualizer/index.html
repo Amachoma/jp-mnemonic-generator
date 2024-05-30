@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <title>Title</title>
+</head>
+<body>
+
+<template id="main-controls">
+    <div class="container" id="editor-layout">
+        <span class="label">Переделать полностью</span>
+        <div class="character">木</div>
+        <img class="character image" src="https://files.wanikani.com/2ckukbkb2ywgdrfath0oj0esabjg" />
+        <input class="translation" type="text" value="Дерево"/>
+        <textarea class="mnemonic">Вы видите здесь дерево? У него есть ветви, а затем листва, нисходящая по диагонали от него, простирающаяся, как дерево могло бы. Вот почему этот радикал — дерево»</textarea>
+        <div class="controls">
+            <button id="redo" value="1">Переделать полностью</button>
+            <button id="ok" value="2">Пойдёт, если поправить</button>
+            <button id="good" value="3">Хорошо</button>
+        </div>
+        <div class="arrows">
+            <button id="back">< Назад</button>
+            <div class="jump">
+                <input type="number" />
+                <button id="jump">Перейти</button>
+            </div>
+            <button id="forward">Вперёд ></button>
+        </div>
+        <button id="export">Экспорт</button>
+    </div>
+</template>
+
+<template id="uploader">
+            <div id="upload-layout">
+            <label for="dataFile">Выберите файл для импорта данных:</label><br>
+            <input type="file" id="dataFile" name="dataFile"><br><br>
+
+            <button id="start-btn">Начать</button>
+        </div>
+</template>
+
+
+    <script src="index.js"></script>
+</body>
+</html>
+
+
