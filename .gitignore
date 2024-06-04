@@ -4,4 +4,9 @@
 
 .idea
 
+dist
+
+build
+
 **/out/
+

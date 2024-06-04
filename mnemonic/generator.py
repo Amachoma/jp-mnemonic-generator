@@ -53,6 +53,7 @@ class MnemonicGenerator:
                 user_input = ""
                 message_history = [message]
                 while user_input != "y":
+                    print(f'Значения иероглифа: {kanji_gen_record['meanings_ru']}\n Радикалы: {kanji_gen_record['radicals_ru']}')
                     message_history.append(mnemonic)
                     dom = xml.dom.minidom.parseString(mnemonic)
                     print(dom.toprettyxml())

@@ -7,10 +7,6 @@ from utils.file import open_lines, write_line
 from utils.time import AvgRemainingTime
 from utils.print_utils import draw_progress_bar
 
-load_dotenv()
-url = "https://api.promptpark.jp/questions"
-headers = {"Authorization": f"Bearer {os.getenv('ID_TOKEN')}"}
-
 CMD = '''
 on run argv
   display notification (item 2 of argv) with title (item 1 of argv)

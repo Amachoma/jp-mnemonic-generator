@@ -14,7 +14,7 @@ class ChatBot:
 
     def __init__(self, task_summary=TASK_SUMMARY):
         self.task_summary = task_summary
-        self.url = "https://api.promptpark.jp/questions"
+        self.url = os.getenv('API_URL')
         self.headers = {"Authorization": f"Bearer {os.getenv('ID_TOKEN')}"}
         self.payload_base = {"chat_mode": 1, "genre_id": 102, "gpt_type": 102, "is_enabled_rag": False,
                              'old_conversation_context_summary': "", "thread_id": None}
@@ -47,7 +47,12 @@ class ChatBot:
             return [final_message, elapsed]
 
         elif response.status_code == 401:
-            raise ValueError("Token expired")
+            token_input = input("Token expired, provide updated token: ").strip()
+            if token_input != "":
+                self.headers = {"Authorization": f"Bearer {token_input}"}
+                return self.send_message(message, message_history)
+            else:
+                raise ValueError("Token expired")
 
         else:
             raise Exception(response.content)
