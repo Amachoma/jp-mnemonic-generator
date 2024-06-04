@@ -36,7 +36,8 @@ class MnemonicGenerator:
             if print_process:
                 print(f"====== Processing '{kanji_gen_record['character']}' ======\n")
 
-            message = f'''Попробуй сгенерировать мнемонику для следующего набора данных: {kanji_gen_record['radicals_ru']}, {kanji_gen_record['meanings_ru']}, '{kanji_gen_record['character']}'''
+            message = f'''Попробуй сгенерировать мнемонику для следующего набора данных: {kanji_gen_record['radicals_ru']}, {kanji_gen_record['meanings_ru']}, '{kanji_gen_record['character']}' '''
+            print(message)
             [mnemonic, time_elapsed] = mnemonic_ai.send_message(message)
 
             avg_timer.add_item(time_elapsed)

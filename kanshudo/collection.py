@@ -36,7 +36,7 @@ class KanshudoCollection:
         if len(filtered) == 1:
             return KanshudoRecord(filtered[0])
         else:
-            raise KeyError()
+            raise KeyError(kanji_character)
 
     def group_by_usefulness(self):
         arr_dict = {}
