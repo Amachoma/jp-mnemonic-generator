@@ -47,7 +47,7 @@ class WanikaniCollection:
         if len(filtered) == 1:
             return filtered[0]
         else:
-            raise KeyError()
+            raise KeyError(character)
 
 
 if __name__ == "__main__":
