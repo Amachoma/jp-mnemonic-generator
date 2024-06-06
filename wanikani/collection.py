@@ -1,6 +1,6 @@
 import os
 
-from utils.file import open_lines
+from utils.file import open_lines, write_line
 from constants import ROOT_DIR
 from kanshudo.collection import KanshudoCollection
 
@@ -51,6 +51,9 @@ class WanikaniCollection:
 
 
 if __name__ == "__main__":
-    col = WanikaniCollection()
-    for level in col.level_collection:
-        print(level)
+    pass
+    # n5_radicals = [rec.radicals for rec in n5_wanikani_records]
+    # print(n5_radicals)
+    # radicals_set = set(radical for radical in n5_radicals)
+    #
+    # print(n5_radicals)
