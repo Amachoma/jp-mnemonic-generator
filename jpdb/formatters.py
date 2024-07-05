@@ -3,12 +3,20 @@ import re
 from time import time
 from utils.print_utils import draw_progress_bar
 
-from utils.file import open_lines, write_line
+from utils.file import open_lines, write_line, open_json
 from utils.time import AvgRemainingTime
+
+word_page_sample = {
+    "page": "<body data-instant-allow-query-string=\"\"><div class=\"nav\"><h1 class=\"nav-logo\"><a href=\"/\">jpdb</a> <span style=\"font-size: 50%\">beta</span></h1><a class=\"nav-item\" href=\"/login\">Login or Sign up</a></div><div class=\"container bugfix\"><div class=\"result vocabulary\"><div class=\"hbox gap\"><div class=\"subsection-spelling with-furigana\"><div class=\"primary-spelling\"><div class=\"spelling\"><div><ruby class=\"v\">ã½ã¼ã<rt></rt>æ°´<rt>ãã</rt></ruby></div></div></div></div><div class=\"subsection-meanings\"><h6 class=\"subsection-label\">Meanings</h6><div class=\"subsection\"><div class=\"part-of-speech\"><div>Noun</div></div><div class=\"description\">1.  soda water</div></div></div></div></div><table class=\"cross-table label-right-align data-right-align\" style=\"margin-top: 1.5rem\"><tr><th></th><th>Used in</th><th>Used in %</th></tr><tr><td>Anime</td><td>0</td><td style=\"opacity: 0.75\">(0%)</td></tr><tr><td>Live action</td><td>0</td><td style=\"opacity: 0.75\">(0%)</td></tr><tr><td>Visual novels</td><td>3</td><td style=\"opacity: 0.75\">(0%)</td></tr><tr><td>Novels</td><td>2</td><td style=\"opacity: 0.75\">(0%)</td></tr><tr><td>Non-fiction</td><td>0</td><td style=\"opacity: 0.75\">(0%)</td></tr><tr><td>Web novels</td><td>0</td><td style=\"opacity: 0.75\">(0%)</td></tr><tr><td>Aozora Bunko</td><td>0</td><td style=\"opacity: 0.75\">(0%)</td></tr></table><h4>Used in</h4><fieldset><legend>Show only</legend><div class=\"sorting-header\"><a href=\"/vocabulary/1965530/ã½ã¼ãæ°´/used-in?show_only=anime\">Anime</a><a href=\"/vocabulary/1965530/ã½ã¼ãæ°´/used-in?show_only=live_action\">Live action</a><a href=\"/vocabulary/1965530/ã½ã¼ãæ°´/used-in?show_only=visual_novel\">Visual novels</a><a href=\"/vocabulary/1965530/ã½ã¼ãæ°´/used-in?show_only=novel\">Novels</a><a href=\"/vocabulary/1965530/ã½ã¼ãæ°´/used-in?show_only=non_fiction\">Books (non-fiction)</a><a href=\"/vocabulary/1965530/ã½ã¼ãæ°´/used-in?show_only=web_novel\">Web novels</a><a href=\"/vocabulary/1965530/ã½ã¼ãæ°´/used-in?show_only=aozora\">Aozora Bunko</a></div></fieldset><p style=\"opacity: 0.75; text-align: right;\">Showing 1..5 from 5 entries</p><div style=\"display: flex; flex-wrap: wrap;\"><div style=\"display: flex; flex-direction: column; margin-right: 2rem; margin-bottom: 0.5rem;\"><div style=\"margin-bottom: 0.75rem; min-width: 11rem; display: flex; justify-content: flex-end;\"><img alt=\"Cover of Dorakuriusu\" loading=\"lazy\" src=\"/static/ee3622878601.jpg\" style=\"max-height: 17rem; max-width: 11rem;\"/></div></div><div style=\"margin-bottom: 3rem; margin-right: 1.5rem; display: flex; flex-direction: column; align-items: flex-start;\"><div style=\"opacity: 0.5\">Visual novel</div><h5 style=\"max-width: 30rem;\">Dorakuriusu</h5><div style=\"margin-left: 0.5rem; display: flex; flex-direction: column; flex-grow: 1; align-items: flex-start;\"><table class=\"cross-table data-right-align\"><tr><th>Used times</th><td>2</td></tr></table><div style=\"flex-grow: 1; min-height: 1rem;\"></div><div style=\"margin-top: 0.5rem;\"><a class=\"outline\" href=\"/visual-novel/5396/dorakuriusu\">See in database...</a></div></div></div></div><div style=\"display: flex; flex-wrap: wrap;\"><div style=\"display: flex; flex-direction: column; margin-right: 2rem; margin-bottom: 0.5rem;\"><div style=\"margin-bottom: 0.75rem; min-width: 11rem; display: flex; justify-content: flex-end;\"><img alt=\"Cover of Fairytale Requiem\" loading=\"lazy\" src=\"/static/e6d2df496d4d.jpg\" style=\"max-height: 17rem; max-width: 11rem;\"/></div></div><div style=\"margin-bottom: 3rem; margin-right: 1.5rem; display: flex; flex-direction: column; align-items: flex-start;\"><div style=\"opacity: 0.5\">Visual novel</div><h5 style=\"max-width: 30rem;\">Fairytale Requiem</h5><div style=\"margin-left: 0.5rem; display: flex; flex-direction: column; flex-grow: 1; align-items: flex-start;\"><table class=\"cross-table data-right-align\"><tr><th>Used times</th><td>1</td></tr></table><div style=\"flex-grow: 1; min-height: 1rem;\"></div><div style=\"margin-top: 0.5rem;\"><a class=\"outline\" href=\"/visual-novel/3997/fairytale-requiem\">See in database...</a></div></div></div></div><div style=\"display: flex; flex-wrap: wrap;\"><div style=\"display: flex; flex-direction: column; margin-right: 2rem; margin-bottom: 0.5rem;\"><div style=\"margin-bottom: 0.75rem; min-width: 11rem; display: flex; justify-content: flex-end;\"><img alt=\"Cover of Shirokuro Nekuro\" loading=\"lazy\" src=\"/static/121f682fe3f6.jpg\" style=\"max-height: 17rem; max-width: 11rem;\"/></div></div><div style=\"margin-bottom: 3rem; margin-right: 1.5rem; display: flex; flex-direction: column; align-items: flex-start;\"><div style=\"opacity: 0.5\">Novel</div><h5 style=\"max-width: 30rem;\">Shirokuro Nekuro</h5><div style=\"margin-left: 0.5rem; display: flex; flex-direction: column; flex-grow: 1; align-items: flex-start;\"><table class=\"cross-table data-right-align\"><tr><th>Used times</th><td>1</td></tr></table><div style=\"flex-grow: 1; min-height: 1rem;\"></div><div style=\"margin-top: 0.5rem;\"><a class=\"outline\" href=\"/novel/6190/shirokuro-nekuro\">See in database...</a></div></div></div></div><div style=\"display: flex; flex-wrap: wrap;\"><div style=\"display: flex; flex-direction: column; margin-right: 2rem; margin-bottom: 0.5rem;\"><div style=\"margin-bottom: 0.75rem; min-width: 11rem; display: flex; justify-content: flex-end;\"><img alt=\"Cover of Tsubasa wo Kudasai\" loading=\"lazy\" src=\"/static/9f67bf807ffc.jpg\" style=\"max-height: 17rem; max-width: 11rem;\"/></div></div><div style=\"margin-bottom: 3rem; margin-right: 1.5rem; display: flex; flex-direction: column; align-items: flex-start;\"><div style=\"opacity: 0.5\">Novel</div><h5 style=\"max-width: 30rem;\">Tsubasa wo Kudasai</h5><div style=\"margin-left: 0.5rem; display: flex; flex-direction: column; flex-grow: 1; align-items: flex-start;\"><table class=\"cross-table data-right-align\"><tr><th>Used times</th><td>1</td></tr></table><div style=\"flex-grow: 1; min-height: 1rem;\"></div><div style=\"margin-top: 0.5rem;\"><a class=\"outline\" href=\"/novel/7734/tsubasa-wo-kudasai\">See in database...</a></div></div></div></div><div style=\"display: flex; flex-wrap: wrap;\"><div style=\"display: flex; flex-direction: column; margin-right: 2rem; margin-bottom: 0.5rem;\"><div style=\"margin-bottom: 0.75rem; min-width: 11rem; display: flex; justify-content: flex-end;\"><img alt=\"Cover of Ai Kiss 2\" loading=\"lazy\" src=\"/static/5ae27700dbda.jpg\" style=\"max-height: 17rem; max-width: 11rem;\"/></div></div><div style=\"margin-bottom: 3rem; margin-right: 1.5rem; display: flex; flex-direction: column; align-items: flex-start;\"><div style=\"opacity: 0.5\">Visual novel</div><h5 style=\"max-width: 30rem;\">Ai Kiss 2</h5><div style=\"margin-left: 0.5rem; display: flex; flex-direction: column; flex-grow: 1; align-items: flex-start;\"><table class=\"cross-table data-right-align\"><tr><th>Used times</th><td>1</td></tr></table><div style=\"flex-grow: 1; min-height: 1rem;\"></div><div style=\"margin-top: 0.5rem;\"><a class=\"outline\" href=\"/visual-novel/15700/ai-kiss-2\">See in database...</a></div></div></div></div><div style=\"padding-top: 0.75rem;\"></div></div><hr class=\"bottom\"/><footer class=\"footer\"><a href=\"/about\">About</a><a href=\"/faq\">FAQ</a><a href=\"/contact-us\">Contact us</a><a href=\"/privacy-policy\">Privacy policy</a><a href=\"/terms-of-use\">Terms of use</a><a href=\"/changelog\">Changelog</a></footer><script defer=\"\" src=\"/static/ae433897feb1.js\" type=\"module\"></script></body>",
+    "word_id": 1965530}
 
 
 def convert_symbols(string):
     return string.encode("latin-1").decode("utf-8")
+
+
+def to_snake_case(string):
+    return string.replace("-", " ").lower().replace(" ", "_")
 
 
 def to_markup(character_tags, parent_tag="word"):
@@ -31,7 +39,7 @@ def to_markup(character_tags, parent_tag="word"):
     return jp_markup
 
 
-if __name__ == "__main__":
+def format_kanji_pages():
     formatted_records = [x['character'] for x in open_lines("./out/kanji_dataset.txt")]
 
     kanji_dataset = open_lines("out/raw_pages_all.txt")
@@ -49,7 +57,8 @@ if __name__ == "__main__":
         vocab_section = BeautifulSoup(vocab, "html.parser").find(attrs={'class': 'subsection-used-in'})
 
         try:
-            kanji_section = BeautifulSoup(kanji, "html.parser").findAll(attrs={'class': 'subsection-composed-of-kanji'})[-1]
+            kanji_section = \
+                BeautifulSoup(kanji, "html.parser").findAll(attrs={'class': 'subsection-composed-of-kanji'})[-1]
         except:
             kanji_section = None
 
@@ -145,3 +154,145 @@ if __name__ == "__main__":
 
         draw_progress_bar(avg_timer.percent)
         print(avg_timer)
+
+
+def get_word_str(page):
+    [word_markup, word_str] = ['', '']
+    word_tag = page.find("ruby")
+    if word_tag is None:
+        print(page)
+    word_tag_children = list(word_tag.children)
+    for index in range(0, len(word_tag_children), 2):
+        character = word_tag_children[index]
+        furigana = word_tag_children[index + 1].text
+
+        if furigana:
+            word_markup += f'<kanji furigana="{furigana}">{character}</kanji>'
+        else:
+            word_markup += character
+
+        word_str += character
+    return word_str
+
+
+def get_media_records(page):
+    media = []
+    media_tags = page.findAll('div', style="display: flex; flex-wrap: wrap;")
+    for tag in media_tags:
+        genre = tag.find("div", style="opacity: 0.5").text.lower()
+        title = tag.find('h5').text
+        use_count = int(tag.find('td').text)
+        media_id = int(tag.find('a').get('href').split('/')[2])
+        media.append({'genre': genre, 'title': title, 'use_count': use_count, 'media_id': media_id})
+    return media
+
+
+def format_word_record(record):
+    page = BeautifulSoup(record["page"], "html.parser")
+
+    word_id = record["word_id"]
+
+    # WORD
+    [word_markup, word_str] = ['', '']
+    word_tag = page.find("ruby")
+    word_tag_children = list(word_tag.children)
+    for index in range(0, len(word_tag_children), 2):
+        character = word_tag_children[index]
+        furigana = word_tag_children[index + 1].text
+
+        if furigana:
+            word_markup += f'<kanji furigana="{convert_symbols(furigana)}">{convert_symbols(character)}</kanji>'
+        else:
+            word_markup += convert_symbols(character)
+
+        word_str += convert_symbols(character)
+
+    meanings_container = page.find(string="Meanings").parent.nextSibling
+
+    # PARTS OF SPEECH AND MEANINGS
+    parts_of_speech_tag = meanings_container.find(attrs={'class': 'part-of-speech'})
+    parts_of_speech = re.split(r',(?![^\[\]()]*[])])', parts_of_speech_tag.text) if parts_of_speech_tag else None
+
+    meanings = []
+    meaning_tags = meanings_container.findAll(attrs={'class': 'description'})
+    for meaning in meaning_tags:
+        meaning_group = [x.strip() for x in meaning.text[4:].split(";")]
+        meanings.append(meaning_group)
+
+    # STATS
+    stat_labels = ['Anime', 'Live action', 'Visual novels', 'Novels', 'Non-fiction', 'Web novels', 'Aozora Bunko']
+    stat_rows = [page.find(string=x).parent.parent for x in stat_labels]
+    stats = {}
+    for row in stat_rows:
+        [label, count, percent] = [x.text for x in list(row.children)]
+        key = to_snake_case(label)
+        stats[key] = (int(count), int(percent[1:-2]))
+
+    # MEDIA BREAKDOWN
+    media = []
+    media_tags = page.findAll('div', style="display: flex; flex-wrap: wrap;")
+    for tag in media_tags:
+        genre = tag.find("div", style="opacity: 0.5").text.lower()
+        title = tag.find('h5').text
+        use_count = int(tag.find('td').text)
+        media_id = int(tag.find('a').get('href').split('/')[2])
+        media.append({'genre': genre, 'title': title, 'use_count': use_count, 'media_id': media_id})
+
+    return {"word_id": word_id, "word_markup": word_markup, "word_str": word_str, "parts_of_speech": parts_of_speech,
+            "meanings": meanings, "stats": stats, "media": media}
+
+
+if __name__ == "__main__":
+    pass
+    # json_data = open_json("./out/formatted_media_records.txt")
+    #
+    # for [media_id, record] in json_data.items():
+    #     flat_record = {'id': media_id, **record}
+    #     write_line('./out/flat_media_records.txt', flat_record)
+    #
+    # print("Finished writing!")
+
+    # formatted_records = [len(x['words']) for x in open_json('./out/formatted_media_records.txt').values()]
+    # print(sum(formatted_records))
+
+    # start_time = time()
+    # media_words = open_lines("./out/extra_media_record.txt")
+    # open_time = time()
+    # print(f"File opened in {open_time - start_time}")
+    #
+    # formatted_media = {}
+    # for media_word in media_words:
+    #     word_details = {'word_id': media_word['word_id'], 'word_str': media_word['word_str'],
+    #                     'use_count': media_word['use_count']}
+    #
+    #     if formatted_media.get(media_word['media_id']) is None:
+    #         formatted_media[media_word['media_id']] = {'genre': media_word['genre'], 'title': media_word['title'],
+    #                                                    'words': [word_details]}
+    #     else:
+    #         formatted_media[media_word['media_id']]['words'].append(word_details)
+    #
+    # processing_time = time()
+    # print(f'Processed in {processing_time - open_time}')
+    # write_line("./out/formatted_media_records.txt", formatted_media)
+    # print(f'Finished writing in {time() - processing_time}')
+
+    # finished_words_ids = [x['word_id'] for x in open_lines("./out/words_formatted.txt")]
+    #
+    # words_src = open_lines("./out/words_all.txt")
+    #
+    # avg_timer = AvgRemainingTime(total=len(words_src) - len(finished_words_ids))
+    # for record in words_src:
+    #     if record['word_id'] in finished_words_ids:
+    #         continue
+    #
+    #     print(f'Processing {record['word_id']}')
+    #     start_time = time()
+    #     formatted = format_word_record(record)
+    #     write_line("./out/words_formatted.txt", formatted)
+    #
+    #     avg_timer.add_item(time() - start_time)
+    #     draw_progress_bar(avg_timer.percent)
+    #     print(avg_timer)
+
+    # format_kanji_pages()
+    # print(format_word_record(word_page_sample))

@@ -2,6 +2,12 @@ import json
 import os
 import types
 
+from utils.print_utils import draw_progress_bar
+from utils.time import AvgRemainingTime
+import importlib
+
+time = importlib.import_module('time').time
+
 
 def open_lines(path):
     result = []
@@ -91,6 +97,15 @@ class IndexReader:
 
                     return self.getter_callback(line.decode())
 
+            elif len(result) > 1:
+                results = []
+                for match in result:
+                    start_byte = match['start_byte']
+                    with open(self.file_path, 'rb') as file:
+                        file.seek(start_byte)
+                        line = file.readline()
+                        results.append(self.getter_callback(line.decode()))
+                return results
             else:
                 raise IndexError('Record not found')
         elif (type(getter)) in [str, int]:
@@ -110,6 +125,39 @@ class IndexReader:
 
     def __len__(self):
         return len(self.index_data)
+
+
+def continuous_writer(in_path, out_path, processing_callback):
+    print("Starting continuous writer...")
+    reader = IndexReader(in_path)
+
+    in_path_split = in_path.split("/")
+    filename = in_path_split.pop()
+    [name, extension] = filename.split(".")
+    cursor_file_path = "/".join([*in_path_split, f'{name}.cursor'])
+
+    is_cursor_exists = os.path.exists(cursor_file_path)
+    if not is_cursor_exists:
+        rewrite_file(cursor_file_path, -1)
+
+    cursor_index = open_json(cursor_file_path)
+
+    print("Initialization finished successfully")
+
+    timer = AvgRemainingTime(len(reader), cursor_index + 1)
+    for index in range(cursor_index + 1, len(reader)):
+        start_time = time()
+        payload = processing_callback(reader.get(index))
+        write_line(out_path, payload)
+
+        cursor_index += 1
+        rewrite_file(cursor_file_path, cursor_index)
+        timer.add_item(time() - start_time)
+
+        draw_progress_bar(timer.percent)
+        print(timer)
+
+    print("Finished!")
 
 
 if __name__ == "__main__":
